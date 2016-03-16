@@ -48,19 +48,29 @@ public class JSONAdapter extends BaseAdapter {
 
         TextView z = (TextView)convertView.findViewById(R.id.zone);
         TextView a = (TextView)convertView.findViewById(R.id.available);
+        TextView recommendation = (TextView)convertView.findViewById(R.id.recommendation);
 
         try {
+
+            if(this.users.get(position).has("isRecommended")){
+                recommendation.setVisibility(View.VISIBLE);
+
+                this.users.get(position).remove("isRecommended");
+            }else{
+                recommendation.setVisibility(View.GONE);
+            }
+
             z.setTextColor(Color.parseColor("#727272"));
 
             z.setText(this.users.get(position).getString("name"));
-            int spacesAvailables = Integer.valueOf(this.users.get(position).getString("capacity")) - Integer.valueOf(this.users.get(position).getString("occupancy"));
+            int spacesAvailables = Integer.valueOf(this.users.get(position).getString("availability"));
             a.setText(spacesAvailables + "");
 
             a.setTextColor(Color.parseColor("#727272"));
 
-
             if(spacesAvailables > goodAvailable) a.setBackground(convertView.getResources().getDrawable(R.drawable.badge_green));
-            else a.setBackground(convertView.getResources().getDrawable(R.drawable.badge_yellow));
+            else if(spacesAvailables > 0) a.setBackground(convertView.getResources().getDrawable(R.drawable.badge_yellow));
+            else a.setBackground(convertView.getResources().getDrawable(R.drawable.badge_red));
         }catch (Exception e){
             e.printStackTrace();
         }
